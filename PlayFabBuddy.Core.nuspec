@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+	<metadata>
+		<id>PlayFabBuddy.Core</id>
+		<version>2.0.0</version>
+		<title>PlayFabBuddy.Core</title>
+		<authors>dmanning23</authors>
+		<owners>dmanning23</owners>
+		<projectUrl>https://github.com/dmanning23/PlayFabBuddy.Core</projectUrl>
+		<licenseUrl>https://github.com/dmanning23/PlayFabBuddy.Core/blob/master/LICENSE.txt</licenseUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Nuget package for the Xamarin PlayFab SDK</description>
+		<releaseNotes />
+		<copyright>Copyright 2016</copyright>
+		<tags>android, ios, windows universal, monogame, xamarin</tags>
+		<dependencies>
+
+			<!--Xamarin.Android-->
+			<group targetFramework="MonoAndroid10">
+			</group>
+
+			<!--Xamarin.iOS Unified-->
+			<group targetFramework="Xamarin.iOS10">
+			</group>
+
+
+			<group targetFramework="net451">
+			</group>
+
+		</dependencies>
+	</metadata>
+	<files>
+
+		<!--Xamarin.Android-->
+		<file src="PlayFabBuddy.Core.Android\bin\Release\PlayFabBuddy.Core.Android.pdb" target="lib\MonoAndroid10\PlayFabBuddy.Core.Android.pdb" />
+		<file src="PlayFabBuddy.Core.Android\bin\Release\PlayFabBuddy.Core.Android.dll" target="lib\MonoAndroid10\PlayFabBuddy.Core.Android.dll" />
+
+		<!--Xamarin.iOS Unified-->
+		<file src="PlayFabBuddy.Core.iOS\bin\Release\PlayFabBuddy.Core.iOS.pdb" target="lib\Xamarin.iOS10\PlayFabBuddy.Core.iOS.pdb" />
+		<file src="PlayFabBuddy.Core.iOS\bin\Release\PlayFabBuddy.Core.iOS.dll" target="lib\Xamarin.iOS10\PlayFabBuddy.Core.iOS.dll" />
+		
+		<!--WindowsDX-->
+		<file src="PlayFabBuddy.Core.WindowsDX\bin\Release\PlayFabBuddy.Core.WindowsDX.pdb" target="lib\net451\PlayFabBuddy.Core.WindowsDX.pdb" />
+		<file src="PlayFabBuddy.Core.WindowsDX\bin\Release\PlayFabBuddy.Core.WindowsDX.dll" target="lib\net451\PlayFabBuddy.Core.WindowsDX.dll" />
+
+	</files>
+</package>
