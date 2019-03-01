@@ -9,6 +9,8 @@
     <Import_RootNamespace>PlayFabBuddy.Core</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)IPlayFabClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PlayFabClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PlayFab\IPlayFabPlugin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PlayFab\ISerializerPlugin.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PlayFab\ITransportPlugin.cs" />
