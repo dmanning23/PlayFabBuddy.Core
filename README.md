@@ -6,7 +6,7 @@ This is a nuget package for the Xamarin PlayFab ClientSDK.
 For an example app showing how to use this package, check out:
 https://github.com/dmanning23/PlayFabExample
 
-#How To Use:#
+## How To Use:
 
 Step 1:
 Install the nuget package:
