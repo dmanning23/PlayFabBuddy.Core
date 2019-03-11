@@ -46,6 +46,11 @@ namespace PlayFabBuddyLib
 			return PlayFabClientAPI.LoginWithIOSDeviceIDAsync(request, customData, extraHeaders);
 		}
 
+		public Task<PlayFabResult<LoginResult>> LoginWithFacebookAsync(LoginWithFacebookRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.LoginWithFacebookAsync(request, customData, extraHeaders);
+		}
+
 		public Task<PlayFabResult<UnlinkAndroidDeviceIDResult>> UnlinkAndroidDeviceIDAsync(UnlinkAndroidDeviceIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
 		{
 			return PlayFabClientAPI.UnlinkAndroidDeviceIDAsync(request, customData, extraHeaders);
@@ -60,5 +65,11 @@ namespace PlayFabBuddyLib
 		{
 			return PlayFabClientAPI.UnlinkIOSDeviceIDAsync(request, customData, extraHeaders);
 		}
+
+		public Task<PlayFabResult<SendAccountRecoveryEmailResult>> SendAccountRecoveryEmailAsync(SendAccountRecoveryEmailRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.SendAccountRecoveryEmailAsync(request, customData, extraHeaders);
+		}
+		
 	}
 }
