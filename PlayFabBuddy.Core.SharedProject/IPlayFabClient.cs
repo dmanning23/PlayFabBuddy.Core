@@ -74,6 +74,16 @@ namespace PlayFabBuddyLib
 		/// </summary>
 		Task<PlayFabResult<SendAccountRecoveryEmailResult>> SendAccountRecoveryEmailAsync(SendAccountRecoveryEmailRequest request, object customData = null, Dictionary<string, string> extraHeaders = null);
 
+		/// <summary>
+		/// Retrieves the user's PlayFab account details
+		/// </summary>
+		Task<PlayFabResult<GetAccountInfoResult>> GetAccountInfoAsync(GetAccountInfoRequest request, object customData = null, Dictionary<string, string> extraHeaders = null);
+
+		/// <summary>
+		/// Updates the title specific display name for the user
+		/// </summary>
+		Task<PlayFabResult<UpdateUserTitleDisplayNameResult>> UpdateUserTitleDisplayNameAsync(UpdateUserTitleDisplayNameRequest request, object customData = null, Dictionary<string, string> extraHeaders = null);
+
 		#endregion //Authentication
 	}
 }

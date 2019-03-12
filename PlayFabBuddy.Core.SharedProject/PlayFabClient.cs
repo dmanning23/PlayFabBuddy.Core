@@ -70,6 +70,15 @@ namespace PlayFabBuddyLib
 		{
 			return PlayFabClientAPI.SendAccountRecoveryEmailAsync(request, customData, extraHeaders);
 		}
-		
+
+		public Task<PlayFabResult<GetAccountInfoResult>> GetAccountInfoAsync(GetAccountInfoRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.GetAccountInfoAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<UpdateUserTitleDisplayNameResult>> UpdateUserTitleDisplayNameAsync(UpdateUserTitleDisplayNameRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.UpdateUserTitleDisplayNameAsync(request, customData, extraHeaders);
+		}
 	}
 }
