@@ -80,5 +80,45 @@ namespace PlayFabBuddyLib
 		{
 			return PlayFabClientAPI.UpdateUserTitleDisplayNameAsync(request, customData, extraHeaders);
 		}
+
+		public Task<PlayFabResult<GetUserInventoryResult>> GetUserInventoryAsync(GetUserInventoryRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.GetUserInventoryAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<ModifyUserVirtualCurrencyResult>> AddUserVirtualCurrencyAsync(AddUserVirtualCurrencyRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.AddUserVirtualCurrencyAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<PurchaseItemResult>> PurchaseItemAsync(PurchaseItemRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.PurchaseItemAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<ConsumeItemResult>> ConsumeItemAsync(ConsumeItemRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.ConsumeItemAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<GetUserDataResult>> GetUserDataAsync(GetUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.GetUserDataAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<GetUserDataResult>> GetUserPublisherDataAsync(GetUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.GetUserPublisherDataAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<UpdateUserDataResult>> UpdateUserDataAsync(UpdateUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.UpdateUserDataAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<UpdateUserDataResult>> UpdateUserPublisherDataAsync(UpdateUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.UpdateUserPublisherDataAsync(request, customData, extraHeaders);
+		}
 	}
 }
