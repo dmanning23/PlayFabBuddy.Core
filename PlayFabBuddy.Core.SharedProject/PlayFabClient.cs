@@ -120,5 +120,30 @@ namespace PlayFabBuddyLib
 		{
 			return PlayFabClientAPI.UpdateUserPublisherDataAsync(request, customData, extraHeaders);
 		}
+
+		public Task<PlayFabResult<GetLeaderboardResult>> GetLeaderboardAsync(GetLeaderboardRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.GetLeaderboardAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<UpdatePlayerStatisticsResult>> UpdatePlayerStatisticsAsync(UpdatePlayerStatisticsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.UpdatePlayerStatisticsAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<GetLeaderboardResult>> GetFriendLeaderboardAsync(GetFriendLeaderboardRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.GetFriendLeaderboardAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<GetLeaderboardAroundPlayerResult>> GetLeaderboardAroundPlayerAsync(GetLeaderboardAroundPlayerRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.GetLeaderboardAroundPlayerAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<GetFriendLeaderboardAroundPlayerResult>> GetFriendLeaderboardAroundPlayerAsync(GetFriendLeaderboardAroundPlayerRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.GetFriendLeaderboardAroundPlayerAsync(request, customData, extraHeaders);
+		}
 	}
 }
