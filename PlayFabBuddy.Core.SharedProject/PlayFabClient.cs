@@ -111,6 +111,11 @@ namespace PlayFabBuddyLib
 			return PlayFabClientAPI.GetUserPublisherDataAsync(request, customData, extraHeaders);
 		}
 
+		public Task<PlayFabResult<GetPlayerStatisticsResult>> GetPlayerStatisticsAsync(GetPlayerStatisticsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.GetPlayerStatisticsAsync(request, customData, extraHeaders);
+		}
+
 		public Task<PlayFabResult<UpdateUserDataResult>> UpdateUserDataAsync(UpdateUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
 		{
 			return PlayFabClientAPI.UpdateUserDataAsync(request, customData, extraHeaders);
