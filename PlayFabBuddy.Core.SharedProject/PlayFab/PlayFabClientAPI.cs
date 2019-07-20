@@ -1,3 +1,5 @@
+#if !DISABLE_PLAYFABCLIENT_API
+
 using PlayFab.ClientModels;
 using PlayFab.Internal;
 using PlayFab.Json;
@@ -11,8 +13,25 @@ namespace PlayFab
     /// APIs which provide the full range of PlayFab features available to the client - authentication, account and data
     /// management, inventory, friends, matchmaking, reporting, and platform-specific functionality
     /// </summary>
-    public class PlayFabClientAPI
+    public static class PlayFabClientAPI
     {
+        /// <summary>
+        /// Verify client login.
+        /// </summary>
+        public static bool IsClientLoggedIn()
+        {
+            return PlayFabSettings.staticPlayer.IsClientLoggedIn();
+        }
+
+        /// <summary>
+        /// Clear the Client SessionToken which allows this Client to call API calls requiring login.
+        /// A new/fresh login will be required after calling this.
+        /// </summary>
+        public static void ForgetAllCredentials()
+        {
+            PlayFabSettings.staticPlayer.ForgetAllCredentials();
+        }
+
         /// <summary>
         /// Accepts an open trade (one that has not yet been accepted or cancelled), if the locally signed-in player is in the
         /// allowed player list for the trade, or it is open to all players. If the call is successful, the offered and accepted
@@ -20,9 +39,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<AcceptTradeResponse>> AcceptTradeAsync(AcceptTradeRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/AcceptTrade", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/AcceptTrade", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -43,9 +64,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<AddFriendResult>> AddFriendAsync(AddFriendRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/AddFriend", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/AddFriend", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -67,9 +90,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<AddGenericIDResult>> AddGenericIDAsync(AddGenericIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/AddGenericID", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/AddGenericID", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -89,9 +114,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<AddOrUpdateContactEmailResult>> AddOrUpdateContactEmailAsync(AddOrUpdateContactEmailRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/AddOrUpdateContactEmail", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/AddOrUpdateContactEmail", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -113,9 +140,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<AddSharedGroupMembersResult>> AddSharedGroupMembersAsync(AddSharedGroupMembersRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/AddSharedGroupMembers", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/AddSharedGroupMembers", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -136,9 +165,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<AddUsernamePasswordResult>> AddUsernamePasswordAsync(AddUsernamePasswordRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/AddUsernamePassword", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/AddUsernamePassword", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -158,9 +189,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ModifyUserVirtualCurrencyResult>> AddUserVirtualCurrencyAsync(AddUserVirtualCurrencyRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/AddUserVirtualCurrency", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/AddUserVirtualCurrency", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -180,9 +213,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<AndroidDevicePushNotificationRegistrationResult>> AndroidDevicePushNotificationRegistrationAsync(AndroidDevicePushNotificationRegistrationRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/AndroidDevicePushNotificationRegistration", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/AndroidDevicePushNotificationRegistration", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -202,9 +237,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<AttributeInstallResult>> AttributeInstallAsync(AttributeInstallRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/AttributeInstall", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/AttributeInstall", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -216,7 +253,7 @@ namespace PlayFab
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<AttributeInstallResult>>(resultRawJson);
             var result = resultData.data;
             // Modify AdvertisingIdType:  Prevents us from sending the id multiple times, and allows automated tests to determine id was sent successfully
-            PlayFabSettings.AdvertisingIdType += "_Successful";
+            PlayFabSettings.staticSettings.AdvertisingIdType += "_Successful";
 
             return new PlayFabResult<AttributeInstallResult> { Result = result, CustomData = customData };
         }
@@ -228,9 +265,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<CancelTradeResponse>> CancelTradeAsync(CancelTradeRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/CancelTrade", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/CancelTrade", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -251,9 +290,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ConfirmPurchaseResult>> ConfirmPurchaseAsync(ConfirmPurchaseRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/ConfirmPurchase", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/ConfirmPurchase", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -273,9 +314,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ConsumeItemResult>> ConsumeItemAsync(ConsumeItemRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/ConsumeItem", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/ConsumeItem", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -295,9 +338,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ConsumePSNEntitlementsResult>> ConsumePSNEntitlementsAsync(ConsumePSNEntitlementsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/ConsumePSNEntitlements", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/ConsumePSNEntitlements", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -318,9 +363,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ConsumeXboxEntitlementsResult>> ConsumeXboxEntitlementsAsync(ConsumeXboxEntitlementsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/ConsumeXboxEntitlements", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/ConsumeXboxEntitlements", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -339,13 +386,15 @@ namespace PlayFab
         /// Requests the creation of a shared group object, containing key/value pairs which may be updated by all members of the
         /// group. Upon creation, the current user will be the only member of the group. Shared Groups are designed for sharing data
         /// between a very small number of players, please see our guide:
-        /// https://api.playfab.com/docs/tutorials/landing-players/shared-groups
+        /// https://docs.microsoft.com/en-us/gaming/playfab/features/social/groups/using-shared-group-data
         /// </summary>
         public static async Task<PlayFabResult<CreateSharedGroupResult>> CreateSharedGroupAsync(CreateSharedGroupRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/CreateSharedGroup", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/CreateSharedGroup", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -365,9 +414,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ExecuteCloudScriptResult>> ExecuteCloudScriptAsync(ExecuteCloudScriptRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/ExecuteCloudScript", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/ExecuteCloudScript", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -387,9 +438,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetAccountInfoResult>> GetAccountInfoAsync(GetAccountInfoRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetAccountInfo", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetAccountInfo", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -410,9 +463,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ListUsersCharactersResult>> GetAllUsersCharactersAsync(ListUsersCharactersRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetAllUsersCharacters", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetAllUsersCharacters", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -432,9 +487,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetCatalogItemsResult>> GetCatalogItemsAsync(GetCatalogItemsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetCatalogItems", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetCatalogItems", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -454,9 +511,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetCharacterDataResult>> GetCharacterDataAsync(GetCharacterDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetCharacterData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetCharacterData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -476,9 +535,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetCharacterInventoryResult>> GetCharacterInventoryAsync(GetCharacterInventoryRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetCharacterInventory", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetCharacterInventory", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -498,9 +559,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetCharacterLeaderboardResult>> GetCharacterLeaderboardAsync(GetCharacterLeaderboardRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetCharacterLeaderboard", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetCharacterLeaderboard", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -520,9 +583,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetCharacterDataResult>> GetCharacterReadOnlyDataAsync(GetCharacterDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetCharacterReadOnlyData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetCharacterReadOnlyData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -542,9 +607,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetCharacterStatisticsResult>> GetCharacterStatisticsAsync(GetCharacterStatisticsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetCharacterStatistics", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetCharacterStatistics", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -569,9 +636,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetContentDownloadUrlResult>> GetContentDownloadUrlAsync(GetContentDownloadUrlRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetContentDownloadUrl", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetContentDownloadUrl", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -591,9 +660,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<CurrentGamesResult>> GetCurrentGamesAsync(CurrentGamesRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetCurrentGames", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetCurrentGames", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -614,9 +685,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetLeaderboardResult>> GetFriendLeaderboardAsync(GetFriendLeaderboardRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetFriendLeaderboard", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetFriendLeaderboard", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -637,9 +710,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetFriendLeaderboardAroundPlayerResult>> GetFriendLeaderboardAroundPlayerAsync(GetFriendLeaderboardAroundPlayerRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetFriendLeaderboardAroundPlayer", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetFriendLeaderboardAroundPlayer", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -660,9 +735,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetFriendsListResult>> GetFriendsListAsync(GetFriendsListRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetFriendsList", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetFriendsList", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -682,9 +759,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GameServerRegionsResult>> GetGameServerRegionsAsync(GameServerRegionsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetGameServerRegions", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetGameServerRegions", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -704,9 +783,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetLeaderboardResult>> GetLeaderboardAsync(GetLeaderboardRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetLeaderboard", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetLeaderboard", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -726,9 +807,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetLeaderboardAroundCharacterResult>> GetLeaderboardAroundCharacterAsync(GetLeaderboardAroundCharacterRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetLeaderboardAroundCharacter", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetLeaderboardAroundCharacter", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -749,9 +832,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetLeaderboardAroundPlayerResult>> GetLeaderboardAroundPlayerAsync(GetLeaderboardAroundPlayerRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetLeaderboardAroundPlayer", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetLeaderboardAroundPlayer", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -771,9 +856,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetLeaderboardForUsersCharactersResult>> GetLeaderboardForUserCharactersAsync(GetLeaderboardForUsersCharactersRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetLeaderboardForUserCharacters", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetLeaderboardForUserCharacters", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -795,9 +882,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPaymentTokenResult>> GetPaymentTokenAsync(GetPaymentTokenRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPaymentToken", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPaymentToken", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -814,13 +903,15 @@ namespace PlayFab
 
         /// <summary>
         /// Gets a Photon custom authentication token that can be used to securely join the player into a Photon room. See
-        /// https://api.playfab.com/docs/using-photon-with-playfab/ for more details.
+        /// https://docs.microsoft.com/en-us/gaming/playfab/features/multiplayer/photon/quickstart for more details.
         /// </summary>
         public static async Task<PlayFabResult<GetPhotonAuthenticationTokenResult>> GetPhotonAuthenticationTokenAsync(GetPhotonAuthenticationTokenRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPhotonAuthenticationToken", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPhotonAuthenticationToken", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -840,9 +931,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayerCombinedInfoResult>> GetPlayerCombinedInfoAsync(GetPlayerCombinedInfoRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerCombinedInfo", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerCombinedInfo", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -862,9 +955,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayerProfileResult>> GetPlayerProfileAsync(GetPlayerProfileRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerProfile", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerProfile", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -884,9 +979,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayerSegmentsResult>> GetPlayerSegmentsAsync(GetPlayerSegmentsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerSegments", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerSegments", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -907,9 +1004,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayerStatisticsResult>> GetPlayerStatisticsAsync(GetPlayerStatisticsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerStatistics", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerStatistics", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -929,9 +1028,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayerStatisticVersionsResult>> GetPlayerStatisticVersionsAsync(GetPlayerStatisticVersionsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerStatisticVersions", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerStatisticVersions", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -951,9 +1052,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayerTagsResult>> GetPlayerTagsAsync(GetPlayerTagsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerTags", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerTags", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -973,9 +1076,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayerTradesResponse>> GetPlayerTradesAsync(GetPlayerTradesRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerTrades", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayerTrades", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -995,9 +1100,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayFabIDsFromFacebookIDsResult>> GetPlayFabIDsFromFacebookIDsAsync(GetPlayFabIDsFromFacebookIDsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromFacebookIDs", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromFacebookIDs", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1017,9 +1124,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayFabIDsFromFacebookInstantGamesIdsResult>> GetPlayFabIDsFromFacebookInstantGamesIdsAsync(GetPlayFabIDsFromFacebookInstantGamesIdsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromFacebookInstantGamesIds", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromFacebookInstantGamesIds", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1040,9 +1149,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayFabIDsFromGameCenterIDsResult>> GetPlayFabIDsFromGameCenterIDsAsync(GetPlayFabIDsFromGameCenterIDsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromGameCenterIDs", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromGameCenterIDs", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1064,9 +1175,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayFabIDsFromGenericIDsResult>> GetPlayFabIDsFromGenericIDsAsync(GetPlayFabIDsFromGenericIDsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromGenericIDs", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromGenericIDs", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1087,9 +1200,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayFabIDsFromGoogleIDsResult>> GetPlayFabIDsFromGoogleIDsAsync(GetPlayFabIDsFromGoogleIDsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromGoogleIDs", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromGoogleIDs", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1111,9 +1226,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayFabIDsFromKongregateIDsResult>> GetPlayFabIDsFromKongregateIDsAsync(GetPlayFabIDsFromKongregateIDsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromKongregateIDs", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromKongregateIDs", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1133,9 +1250,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayFabIDsFromNintendoSwitchDeviceIdsResult>> GetPlayFabIDsFromNintendoSwitchDeviceIdsAsync(GetPlayFabIDsFromNintendoSwitchDeviceIdsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromNintendoSwitchDeviceIds", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromNintendoSwitchDeviceIds", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1155,9 +1274,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayFabIDsFromPSNAccountIDsResult>> GetPlayFabIDsFromPSNAccountIDsAsync(GetPlayFabIDsFromPSNAccountIDsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromPSNAccountIDs", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromPSNAccountIDs", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1178,9 +1299,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayFabIDsFromSteamIDsResult>> GetPlayFabIDsFromSteamIDsAsync(GetPlayFabIDsFromSteamIDsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromSteamIDs", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromSteamIDs", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1202,9 +1325,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayFabIDsFromTwitchIDsResult>> GetPlayFabIDsFromTwitchIDsAsync(GetPlayFabIDsFromTwitchIDsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromTwitchIDs", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromTwitchIDs", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1224,9 +1349,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPlayFabIDsFromXboxLiveIDsResult>> GetPlayFabIDsFromXboxLiveIDsAsync(GetPlayFabIDsFromXboxLiveIDsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromXboxLiveIDs", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPlayFabIDsFromXboxLiveIDs", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1246,9 +1373,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPublisherDataResult>> GetPublisherDataAsync(GetPublisherDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPublisherData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPublisherData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1269,9 +1398,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetPurchaseResult>> GetPurchaseAsync(GetPurchaseRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetPurchase", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetPurchase", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1294,9 +1425,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetSharedGroupDataResult>> GetSharedGroupDataAsync(GetSharedGroupDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetSharedGroupData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetSharedGroupData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1316,9 +1449,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetStoreItemsResult>> GetStoreItemsAsync(GetStoreItemsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetStoreItems", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetStoreItems", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1338,9 +1473,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetTimeResult>> GetTimeAsync(GetTimeRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetTime", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetTime", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1360,9 +1497,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetTitleDataResult>> GetTitleDataAsync(GetTitleDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetTitleData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetTitleData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1382,9 +1521,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetTitleNewsResult>> GetTitleNewsAsync(GetTitleNewsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetTitleNews", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetTitleNews", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1404,6 +1545,7 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetTitlePublicKeyResult>> GetTitlePublicKeyAsync(GetTitlePublicKeyRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/GetTitlePublicKey", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -1425,9 +1567,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetTradeStatusResponse>> GetTradeStatusAsync(GetTradeStatusRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetTradeStatus", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetTradeStatus", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1447,9 +1591,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetUserDataResult>> GetUserDataAsync(GetUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetUserData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetUserData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1469,9 +1615,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetUserInventoryResult>> GetUserInventoryAsync(GetUserInventoryRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetUserInventory", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetUserInventory", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1491,9 +1639,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetUserDataResult>> GetUserPublisherDataAsync(GetUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetUserPublisherData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetUserPublisherData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1513,9 +1663,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetUserDataResult>> GetUserPublisherReadOnlyDataAsync(GetUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetUserPublisherReadOnlyData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetUserPublisherReadOnlyData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1535,9 +1687,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetUserDataResult>> GetUserReadOnlyDataAsync(GetUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GetUserReadOnlyData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GetUserReadOnlyData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1557,6 +1711,7 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GetWindowsHelloChallengeResponse>> GetWindowsHelloChallengeAsync(GetWindowsHelloChallengeRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/GetWindowsHelloChallenge", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -1579,9 +1734,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<GrantCharacterToUserResult>> GrantCharacterToUserAsync(GrantCharacterToUserRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/GrantCharacterToUser", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/GrantCharacterToUser", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1601,9 +1758,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkAndroidDeviceIDResult>> LinkAndroidDeviceIDAsync(LinkAndroidDeviceIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkAndroidDeviceID", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkAndroidDeviceID", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1623,9 +1782,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkCustomIDResult>> LinkCustomIDAsync(LinkCustomIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkCustomID", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkCustomID", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1645,9 +1806,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkFacebookAccountResult>> LinkFacebookAccountAsync(LinkFacebookAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkFacebookAccount", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkFacebookAccount", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1667,9 +1830,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkFacebookInstantGamesIdResult>> LinkFacebookInstantGamesIdAsync(LinkFacebookInstantGamesIdRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkFacebookInstantGamesId", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkFacebookInstantGamesId", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1689,9 +1854,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkGameCenterAccountResult>> LinkGameCenterAccountAsync(LinkGameCenterAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkGameCenterAccount", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkGameCenterAccount", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1711,9 +1878,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkGoogleAccountResult>> LinkGoogleAccountAsync(LinkGoogleAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkGoogleAccount", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkGoogleAccount", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1733,9 +1902,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkIOSDeviceIDResult>> LinkIOSDeviceIDAsync(LinkIOSDeviceIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkIOSDeviceID", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkIOSDeviceID", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1755,9 +1926,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkKongregateAccountResult>> LinkKongregateAsync(LinkKongregateAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkKongregate", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkKongregate", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1777,9 +1950,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkNintendoSwitchDeviceIdResult>> LinkNintendoSwitchDeviceIdAsync(LinkNintendoSwitchDeviceIdRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkNintendoSwitchDeviceId", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkNintendoSwitchDeviceId", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1800,9 +1975,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<EmptyResult>> LinkOpenIdConnectAsync(LinkOpenIdConnectRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkOpenIdConnect", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkOpenIdConnect", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1822,9 +1999,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkPSNAccountResult>> LinkPSNAccountAsync(LinkPSNAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkPSNAccount", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkPSNAccount", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1844,9 +2023,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkSteamAccountResult>> LinkSteamAccountAsync(LinkSteamAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkSteamAccount", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkSteamAccount", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1866,9 +2047,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkTwitchAccountResult>> LinkTwitchAsync(LinkTwitchAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkTwitch", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkTwitch", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1888,9 +2071,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkWindowsHelloAccountResponse>> LinkWindowsHelloAsync(LinkWindowsHelloAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkWindowsHello", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkWindowsHello", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1910,9 +2095,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LinkXboxAccountResult>> LinkXboxAccountAsync(LinkXboxAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/LinkXboxAccount", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/LinkXboxAccount", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -1933,8 +2120,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithAndroidDeviceIDAsync(LoginWithAndroidDeviceIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithAndroidDeviceID", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -1947,8 +2135,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -1960,8 +2148,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithCustomIDAsync(LoginWithCustomIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithCustomID", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -1974,8 +2163,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -1989,8 +2178,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithEmailAddressAsync(LoginWithEmailAddressRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithEmailAddress", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2003,8 +2193,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2016,8 +2206,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithFacebookAsync(LoginWithFacebookRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithFacebook", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2030,8 +2221,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2043,8 +2234,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithFacebookInstantGamesIdAsync(LoginWithFacebookInstantGamesIdRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithFacebookInstantGamesId", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2057,8 +2249,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2070,8 +2262,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithGameCenterAsync(LoginWithGameCenterRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithGameCenter", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2084,8 +2277,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2096,8 +2289,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithGoogleAccountAsync(LoginWithGoogleAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithGoogleAccount", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2110,8 +2304,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2123,8 +2317,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithIOSDeviceIDAsync(LoginWithIOSDeviceIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithIOSDeviceID", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2137,8 +2332,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2149,8 +2344,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithKongregateAsync(LoginWithKongregateRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithKongregate", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2163,8 +2359,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2176,8 +2372,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithNintendoSwitchDeviceIdAsync(LoginWithNintendoSwitchDeviceIdRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithNintendoSwitchDeviceId", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2190,8 +2387,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2203,8 +2400,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithOpenIdConnectAsync(LoginWithOpenIdConnectRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithOpenIdConnect", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2217,8 +2415,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2232,8 +2430,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithPlayFabAsync(LoginWithPlayFabRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithPlayFab", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2246,8 +2445,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2259,8 +2458,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithPSNAsync(LoginWithPSNRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithPSN", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2273,8 +2473,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2286,8 +2486,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithSteamAsync(LoginWithSteamRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithSteam", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2300,8 +2501,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2312,8 +2513,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithTwitchAsync(LoginWithTwitchRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithTwitch", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2326,8 +2528,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2341,8 +2543,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithWindowsHelloAsync(LoginWithWindowsHelloRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithWindowsHello", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2355,8 +2558,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2368,8 +2571,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> LoginWithXboxAsync(LoginWithXboxRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/LoginWithXbox", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2382,8 +2586,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2399,9 +2603,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<MatchmakeResult>> MatchmakeAsync(MatchmakeRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/Matchmake", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/Matchmake", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2421,9 +2627,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<OpenTradeResponse>> OpenTradeAsync(OpenTradeRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/OpenTrade", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/OpenTrade", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2443,9 +2651,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<PayForPurchaseResult>> PayForPurchaseAsync(PayForPurchaseRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/PayForPurchase", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/PayForPurchase", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2466,9 +2676,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<PurchaseItemResult>> PurchaseItemAsync(PurchaseItemRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/PurchaseItem", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/PurchaseItem", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2489,9 +2701,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<RedeemCouponResult>> RedeemCouponAsync(RedeemCouponRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/RedeemCoupon", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/RedeemCoupon", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2511,9 +2725,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<EmptyResponse>> RefreshPSNAuthTokenAsync(RefreshPSNAuthTokenRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/RefreshPSNAuthToken", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/RefreshPSNAuthToken", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2533,9 +2749,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<RegisterForIOSPushNotificationResult>> RegisterForIOSPushNotificationAsync(RegisterForIOSPushNotificationRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/RegisterForIOSPushNotification", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/RegisterForIOSPushNotification", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2556,8 +2774,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<RegisterPlayFabUserResult>> RegisterPlayFabUserAsync(RegisterPlayFabUserRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/RegisterPlayFabUser", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2570,7 +2789,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<RegisterPlayFabUserResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<RegisterPlayFabUserResult> { Result = result, CustomData = customData };
@@ -2582,8 +2802,9 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<LoginResult>> RegisterWithWindowsHelloAsync(RegisterWithWindowsHelloRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            request.TitleId = PlayFabSettings.TitleId ?? request.TitleId;
-            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.TitleId set to call this method");
+            if (request != null) request.TitleId = request?.TitleId ?? PlayFabSettings.staticSettings.TitleId;
+            if (request.TitleId == null) throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "Must be have PlayFabSettings.staticSettings.TitleId set to call this method");
+
 
             var httpResult = await PlayFabHttp.DoPost("/Client/RegisterWithWindowsHello", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
@@ -2596,8 +2817,8 @@ namespace PlayFab
             var resultRawJson = (string)httpResult;
             var resultData = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer).DeserializeObject<PlayFabJsonSuccess<LoginResult>>(resultRawJson);
             var result = resultData.data;
-            PlayFabSettings.ClientSessionTicket = result.SessionTicket ?? PlayFabSettings.ClientSessionTicket;
-            PlayFabSettings.EntityToken = result.EntityToken?.EntityToken ?? PlayFabSettings.EntityToken;
+            result.AuthenticationContext = new PlayFabAuthenticationContext(result.SessionTicket, result.EntityToken.EntityToken, result.PlayFabId, result.EntityToken.Entity.Id, result.EntityToken.Entity.Type);
+            PlayFabSettings.staticPlayer.CopyFrom(result.AuthenticationContext);
             await MultiStepClientLogin(result.SettingsForUser.NeedsAttribution);
 
             return new PlayFabResult<LoginResult> { Result = result, CustomData = customData };
@@ -2608,9 +2829,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<RemoveContactEmailResult>> RemoveContactEmailAsync(RemoveContactEmailRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/RemoveContactEmail", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/RemoveContactEmail", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2630,9 +2853,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<RemoveFriendResult>> RemoveFriendAsync(RemoveFriendRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/RemoveFriend", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/RemoveFriend", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2652,9 +2877,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<RemoveGenericIDResult>> RemoveGenericIDAsync(RemoveGenericIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/RemoveGenericID", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/RemoveGenericID", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2677,9 +2904,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<RemoveSharedGroupMembersResult>> RemoveSharedGroupMembersAsync(RemoveSharedGroupMembersRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/RemoveSharedGroupMembers", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/RemoveSharedGroupMembers", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2700,9 +2929,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<EmptyResponse>> ReportDeviceInfoAsync(DeviceInfoRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/ReportDeviceInfo", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/ReportDeviceInfo", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2723,9 +2954,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ReportPlayerClientResult>> ReportPlayerAsync(ReportPlayerClientRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/ReportPlayer", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/ReportPlayer", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2745,9 +2978,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<RestoreIOSPurchasesResult>> RestoreIOSPurchasesAsync(RestoreIOSPurchasesRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/RestoreIOSPurchases", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/RestoreIOSPurchases", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2770,6 +3005,7 @@ namespace PlayFab
         public static async Task<PlayFabResult<SendAccountRecoveryEmailResult>> SendAccountRecoveryEmailAsync(SendAccountRecoveryEmailRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
 
+
             var httpResult = await PlayFabHttp.DoPost("/Client/SendAccountRecoveryEmail", request, null, null, extraHeaders);
             if (httpResult is PlayFabError)
             {
@@ -2790,9 +3026,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<SetFriendTagsResult>> SetFriendTagsAsync(SetFriendTagsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/SetFriendTags", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/SetFriendTags", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2813,9 +3051,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<SetPlayerSecretResult>> SetPlayerSecretAsync(SetPlayerSecretRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/SetPlayerSecret", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/SetPlayerSecret", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2835,9 +3075,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<StartGameResult>> StartGameAsync(StartGameRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/StartGame", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/StartGame", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2857,9 +3099,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<StartPurchaseResult>> StartPurchaseAsync(StartPurchaseRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/StartPurchase", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/StartPurchase", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2880,9 +3124,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ModifyUserVirtualCurrencyResult>> SubtractUserVirtualCurrencyAsync(SubtractUserVirtualCurrencyRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/SubtractUserVirtualCurrency", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/SubtractUserVirtualCurrency", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2902,9 +3148,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkAndroidDeviceIDResult>> UnlinkAndroidDeviceIDAsync(UnlinkAndroidDeviceIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkAndroidDeviceID", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkAndroidDeviceID", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2924,9 +3172,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkCustomIDResult>> UnlinkCustomIDAsync(UnlinkCustomIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkCustomID", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkCustomID", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2946,9 +3196,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkFacebookAccountResult>> UnlinkFacebookAccountAsync(UnlinkFacebookAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkFacebookAccount", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkFacebookAccount", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2968,9 +3220,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkFacebookInstantGamesIdResult>> UnlinkFacebookInstantGamesIdAsync(UnlinkFacebookInstantGamesIdRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkFacebookInstantGamesId", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkFacebookInstantGamesId", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -2990,9 +3244,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkGameCenterAccountResult>> UnlinkGameCenterAccountAsync(UnlinkGameCenterAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkGameCenterAccount", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkGameCenterAccount", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3013,9 +3269,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkGoogleAccountResult>> UnlinkGoogleAccountAsync(UnlinkGoogleAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkGoogleAccount", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkGoogleAccount", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3035,9 +3293,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkIOSDeviceIDResult>> UnlinkIOSDeviceIDAsync(UnlinkIOSDeviceIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkIOSDeviceID", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkIOSDeviceID", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3057,9 +3317,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkKongregateAccountResult>> UnlinkKongregateAsync(UnlinkKongregateAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkKongregate", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkKongregate", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3079,9 +3341,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkNintendoSwitchDeviceIdResult>> UnlinkNintendoSwitchDeviceIdAsync(UnlinkNintendoSwitchDeviceIdRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkNintendoSwitchDeviceId", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkNintendoSwitchDeviceId", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3102,9 +3366,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<EmptyResponse>> UnlinkOpenIdConnectAsync(UninkOpenIdConnectRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkOpenIdConnect", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkOpenIdConnect", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3124,9 +3390,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkPSNAccountResult>> UnlinkPSNAccountAsync(UnlinkPSNAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkPSNAccount", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkPSNAccount", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3146,9 +3414,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkSteamAccountResult>> UnlinkSteamAccountAsync(UnlinkSteamAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkSteamAccount", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkSteamAccount", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3168,9 +3438,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkTwitchAccountResult>> UnlinkTwitchAsync(UnlinkTwitchAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkTwitch", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkTwitch", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3190,9 +3462,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkWindowsHelloAccountResponse>> UnlinkWindowsHelloAsync(UnlinkWindowsHelloAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkWindowsHello", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkWindowsHello", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3212,9 +3486,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlinkXboxAccountResult>> UnlinkXboxAccountAsync(UnlinkXboxAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkXboxAccount", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlinkXboxAccount", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3236,9 +3512,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlockContainerItemResult>> UnlockContainerInstanceAsync(UnlockContainerInstanceRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlockContainerInstance", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlockContainerInstance", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3260,9 +3538,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UnlockContainerItemResult>> UnlockContainerItemAsync(UnlockContainerItemRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UnlockContainerItem", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UnlockContainerItem", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3282,9 +3562,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<EmptyResponse>> UpdateAvatarUrlAsync(UpdateAvatarUrlRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateAvatarUrl", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateAvatarUrl", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3304,9 +3586,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UpdateCharacterDataResult>> UpdateCharacterDataAsync(UpdateCharacterDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateCharacterData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateCharacterData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3327,9 +3611,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UpdateCharacterStatisticsResult>> UpdateCharacterStatisticsAsync(UpdateCharacterStatisticsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateCharacterStatistics", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateCharacterStatistics", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3350,9 +3636,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UpdatePlayerStatisticsResult>> UpdatePlayerStatisticsAsync(UpdatePlayerStatisticsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UpdatePlayerStatistics", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UpdatePlayerStatistics", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3376,9 +3664,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UpdateSharedGroupDataResult>> UpdateSharedGroupDataAsync(UpdateSharedGroupDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateSharedGroupData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateSharedGroupData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3398,9 +3688,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UpdateUserDataResult>> UpdateUserDataAsync(UpdateUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateUserData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateUserData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3420,9 +3712,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UpdateUserDataResult>> UpdateUserPublisherDataAsync(UpdateUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateUserPublisherData", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateUserPublisherData", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3442,9 +3736,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<UpdateUserTitleDisplayNameResult>> UpdateUserTitleDisplayNameAsync(UpdateUserTitleDisplayNameRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateUserTitleDisplayName", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/UpdateUserTitleDisplayName", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3465,9 +3761,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ValidateAmazonReceiptResult>> ValidateAmazonIAPReceiptAsync(ValidateAmazonReceiptRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/ValidateAmazonIAPReceipt", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/ValidateAmazonIAPReceipt", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3487,9 +3785,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ValidateGooglePlayPurchaseResult>> ValidateGooglePlayPurchaseAsync(ValidateGooglePlayPurchaseRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/ValidateGooglePlayPurchase", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/ValidateGooglePlayPurchase", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3510,9 +3810,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ValidateIOSReceiptResult>> ValidateIOSReceiptAsync(ValidateIOSReceiptRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/ValidateIOSReceipt", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/ValidateIOSReceipt", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3533,9 +3835,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<ValidateWindowsReceiptResult>> ValidateWindowsStoreReceiptAsync(ValidateWindowsReceiptRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/ValidateWindowsStoreReceipt", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/ValidateWindowsStoreReceipt", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3555,9 +3859,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<WriteEventResponse>> WriteCharacterEventAsync(WriteClientCharacterEventRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/WriteCharacterEvent", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/WriteCharacterEvent", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3577,9 +3883,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<WriteEventResponse>> WritePlayerEventAsync(WriteClientPlayerEventRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/WritePlayerEvent", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/WritePlayerEvent", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3599,9 +3907,11 @@ namespace PlayFab
         /// </summary>
         public static async Task<PlayFabResult<WriteEventResponse>> WriteTitleEventAsync(WriteTitleEventRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
         {
-            if (PlayFabSettings.ClientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
+            var context = request?.AuthenticationContext ?? PlayFabSettings.staticPlayer; var clientSessionTicket = context.ClientSessionTicket;
+            if (clientSessionTicket == null) throw new PlayFabException(PlayFabExceptionCode.NotLoggedIn, "Must be logged in to call this method");
 
-            var httpResult = await PlayFabHttp.DoPost("/Client/WriteTitleEvent", request, "X-Authorization", PlayFabSettings.ClientSessionTicket, extraHeaders);
+
+            var httpResult = await PlayFabHttp.DoPost("/Client/WriteTitleEvent", request, "X-Authorization", clientSessionTicket, extraHeaders);
             if (httpResult is PlayFabError)
             {
                 var error = (PlayFabError)httpResult;
@@ -3616,21 +3926,15 @@ namespace PlayFab
             return new PlayFabResult<WriteEventResponse> { Result = result, CustomData = customData };
         }
 
-        // Determine if the client session ticket is set, without actually making it public
-        public static bool IsClientLoggedIn()
-        {
-            return !string.IsNullOrEmpty(PlayFabSettings.ClientSessionTicket);
-        }
-
         private static async Task<PlayFabResult<AttributeInstallResult>> MultiStepClientLogin(bool needsAttribution)
         {
-            if (needsAttribution && !PlayFabSettings.DisableAdvertising && !string.IsNullOrEmpty(PlayFabSettings.AdvertisingIdType) && !string.IsNullOrEmpty(PlayFabSettings.AdvertisingIdValue))
+            if (needsAttribution && !PlayFabSettings.staticSettings.DisableAdvertising && !string.IsNullOrEmpty(PlayFabSettings.staticSettings.AdvertisingIdType) && !string.IsNullOrEmpty(PlayFabSettings.staticSettings.AdvertisingIdValue))
             {
                 var request = new AttributeInstallRequest();
-                if (PlayFabSettings.AdvertisingIdType == PlayFabSettings.AD_TYPE_IDFA)
-                    request.Idfa = PlayFabSettings.AdvertisingIdValue;
-                else if (PlayFabSettings.AdvertisingIdType == PlayFabSettings.AD_TYPE_ANDROID_ID)
-                    request.Adid = PlayFabSettings.AdvertisingIdValue;
+                if (PlayFabSettings.staticSettings.AdvertisingIdType == PlayFabSettings.AD_TYPE_IDFA)
+                    request.Idfa = PlayFabSettings.staticSettings.AdvertisingIdValue;
+                else if (PlayFabSettings.staticSettings.AdvertisingIdType == PlayFabSettings.AD_TYPE_ANDROID_ID)
+                    request.Adid = PlayFabSettings.staticSettings.AdvertisingIdValue;
                 else
                     return null;
                 return await AttributeInstallAsync(request);
@@ -3639,3 +3943,4 @@ namespace PlayFab
         }
     }
 }
+#endif

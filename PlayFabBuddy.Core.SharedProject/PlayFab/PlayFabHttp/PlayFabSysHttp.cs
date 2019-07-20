@@ -1,8 +1,7 @@
-#if !NETFX_CORE || !XAMARIN
-
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,10 +11,9 @@ namespace PlayFab.Internal
     {
         private readonly HttpClient _client = new HttpClient();
 
-        public async Task<object> DoPost(string urlPath, object request, Dictionary<string, string> extraHeaders)
+        public async Task<object> DoPost(string fullUrl, object request, Dictionary<string, string> extraHeaders)
         {
             var serializer = PluginManager.GetPlugin<ISerializerPlugin>(PluginContract.PlayFab_Serializer);
-            var fullUrl = PlayFabSettings.GetFullUrl(urlPath, PlayFabSettings.RequestGetParams);
             string bodyString;
 
             if (request == null)
@@ -34,8 +32,20 @@ namespace PlayFab.Internal
                 postBody.Headers.Add("Content-Type", "application/json");
                 postBody.Headers.Add("X-PlayFabSDK", PlayFabSettings.SdkVersionString);
                 if (extraHeaders != null)
+                {
                     foreach (var headerPair in extraHeaders)
-                        postBody.Headers.Add(headerPair.Key, headerPair.Value);
+                    {
+                        // Special case for Authorization header
+                        if (headerPair.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase))
+                        {
+                            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", headerPair.Value);
+                        }
+                        else
+                        {
+                            postBody.Headers.Add(headerPair.Key, headerPair.Value);
+                        }
+                    }
+                }
 
                 try
                 {
@@ -106,4 +116,3 @@ namespace PlayFab.Internal
         }
     }
 }
-#endif

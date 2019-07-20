@@ -12,12 +12,46 @@ namespace PlayFab.AuthenticationModels
         /// <summary>
         /// Unique ID of the entity.
         /// </summary>
-        public string Id;
+        public string Id { get; set; }
 
         /// <summary>
         /// Entity type. See https://api.playfab.com/docs/tutorials/entities/entitytypes
         /// </summary>
-        public string Type;
+        public string Type { get; set; }
+
+    }
+
+    public class EntityLineage
+    {
+        /// <summary>
+        /// The Character Id of the associated entity.
+        /// </summary>
+        public string CharacterId ;
+
+        /// <summary>
+        /// The Group Id of the associated entity.
+        /// </summary>
+        public string GroupId ;
+
+        /// <summary>
+        /// The Master Player Account Id of the associated entity.
+        /// </summary>
+        public string MasterPlayerAccountId ;
+
+        /// <summary>
+        /// The Namespace Id of the associated entity.
+        /// </summary>
+        public string NamespaceId ;
+
+        /// <summary>
+        /// The Title Id of the associated entity.
+        /// </summary>
+        public string TitleId ;
+
+        /// <summary>
+        /// The Title Player Account Id of the associated entity.
+        /// </summary>
+        public string TitlePlayerAccountId ;
 
     }
 
@@ -33,7 +67,7 @@ namespace PlayFab.AuthenticationModels
         /// <summary>
         /// The entity to perform this action on.
         /// </summary>
-        public EntityKey Entity;
+        public EntityKey Entity ;
 
     }
 
@@ -42,17 +76,43 @@ namespace PlayFab.AuthenticationModels
         /// <summary>
         /// The entity id and type.
         /// </summary>
-        public EntityKey Entity;
+        public EntityKey Entity ;
 
         /// <summary>
         /// The token used to set X-EntityToken for all entity based API calls.
         /// </summary>
-        public string EntityToken;
+        public string EntityToken ;
 
         /// <summary>
         /// The time the token will expire, if it is an expiring token, in UTC.
         /// </summary>
-        public DateTime? TokenExpiration;
+        public DateTime? TokenExpiration ;
+
+    }
+
+    /// <summary>
+    /// Given an entity token, validates that it hasn't exipired or been revoked and will return details of the owner.
+    /// </summary>
+    public class ValidateEntityTokenRequest : PlayFabRequestCommon
+    {
+        /// <summary>
+        /// Client EntityToken
+        /// </summary>
+        public string EntityToken ;
+
+    }
+
+    public class ValidateEntityTokenResponse : PlayFabResultCommon
+    {
+        /// <summary>
+        /// The entity id and type.
+        /// </summary>
+        public EntityKey Entity ;
+
+        /// <summary>
+        /// The lineage of this profile.
+        /// </summary>
+        public EntityLineage Lineage ;
 
     }
 }

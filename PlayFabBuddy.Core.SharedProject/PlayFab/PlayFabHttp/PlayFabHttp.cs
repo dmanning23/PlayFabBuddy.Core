@@ -10,6 +10,7 @@ namespace PlayFab.Internal
     /// </summary>
     public class PlayFabRequestCommon
     {
+        public PlayFabAuthenticationContext AuthenticationContext;
     }
 
     /// <summary>
@@ -19,6 +20,11 @@ namespace PlayFab.Internal
     /// </summary>
     public class PlayFabResultCommon
     {
+    }
+
+    public class PlayFabLoginResultCommon : PlayFabResultCommon
+    {
+        public PlayFabAuthenticationContext AuthenticationContext;
     }
 
     public class PlayFabJsonError
@@ -40,9 +46,23 @@ namespace PlayFab.Internal
 
     public static class PlayFabHttp
     {
-        public static async Task<object> DoPost(string urlPath, PlayFabRequestCommon request, string authType, string authKey, Dictionary<string, string> extraHeaders)
+        public static async Task<object> DoPost(string urlPath, PlayFabRequestCommon request, string authType, string authKey, Dictionary<string, string> extraHeaders, PlayFabApiSettings instanceSettings = null)
         {
-            if (PlayFabSettings.TitleId == null)
+            var settings = instanceSettings ?? PlayFabSettings.staticSettings;
+            var fullPath = settings.GetFullUrl(urlPath);
+            return await _DoPost(fullPath, request, authType, authKey, extraHeaders, instanceSettings);
+        }
+
+        public static async Task<object> DoPostWithFullUri(string fullUriPath, PlayFabRequestCommon request, string authType, string authKey, Dictionary<string, string> extraHeaders, PlayFabApiSettings instanceSettings = null)
+        {
+            return await _DoPost(fullUriPath, request, authType, authKey, extraHeaders, instanceSettings);
+        }
+
+        private static async Task<object> _DoPost(string fullPath, PlayFabRequestCommon request, string authType, string authKey, Dictionary<string, string> extraHeaders, PlayFabApiSettings instanceSettings = null)
+        {
+            var settings = instanceSettings ?? PlayFabSettings.staticSettings;
+            var titleId = settings.TitleId;
+            if (titleId == null)
                 throw new PlayFabException(PlayFabExceptionCode.TitleNotSet, "You must set your titleId before making an api call");
             var transport = PluginManager.GetPlugin<ITransportPlugin>(PluginContract.PlayFab_Transport);
 
@@ -59,7 +79,7 @@ namespace PlayFab.Internal
                 }
             }
 
-            return await transport.DoPost(urlPath, request, headers);
+            return await transport.DoPost(fullPath, request, headers);
         }
     }
 }
