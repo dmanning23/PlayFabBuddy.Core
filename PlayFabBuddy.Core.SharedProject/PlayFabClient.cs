@@ -13,7 +13,7 @@ namespace PlayFabBuddyLib
 		/// <param name="titleId">The titleId for your PlayFab game.</param>
 		public PlayFabClient(string titleId)
 		{
-			PlayFabSettings.TitleId = titleId;
+			PlayFabSettings.staticSettings.TitleId = titleId;
 		}
 
 		public Task<PlayFabResult<AddUsernamePasswordResult>> AddUsernamePasswordAsync(AddUsernamePasswordRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
@@ -99,6 +99,11 @@ namespace PlayFabBuddyLib
 		public Task<PlayFabResult<ConsumeItemResult>> ConsumeItemAsync(ConsumeItemRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
 		{
 			return PlayFabClientAPI.ConsumeItemAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<GetStoreItemsResult>> GetStoreItemsAsync(GetStoreItemsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.GetStoreItemsAsync(request, customData, extraHeaders);
 		}
 
 		public Task<PlayFabResult<GetUserDataResult>> GetUserDataAsync(GetUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)

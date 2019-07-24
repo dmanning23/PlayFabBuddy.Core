@@ -96,9 +96,11 @@ namespace PlayFabBuddyLib
 
 		Task<PlayFabResult<ConsumeItemResult>> ConsumeItemAsync(ConsumeItemRequest request, object customData = null, Dictionary<string, string> extraHeaders = null);
 
+		Task<PlayFabResult<GetStoreItemsResult>> GetStoreItemsAsync(GetStoreItemsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null);
+
 		#endregion //Player Inventory
 
-		#region Player Inventory
+		#region Player Data
 
 		Task<PlayFabResult<GetUserDataResult>> GetUserDataAsync(GetUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null);
 
@@ -108,7 +110,7 @@ namespace PlayFabBuddyLib
 
 		Task<PlayFabResult<UpdateUserDataResult>> UpdateUserPublisherDataAsync(UpdateUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null);
 
-		#endregion //Player Inventory
+		#endregion //Player Data
 
 		#region Leaderboards
 

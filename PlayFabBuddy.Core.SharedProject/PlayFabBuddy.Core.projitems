@@ -84,7 +84,4 @@
     <Compile Include="$(MSBuildThisFileDirectory)PlayFab\Uunit\UUnitTestSuite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PlayFab\WsaReflectionExtensions.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)PlayFab\PlayFabSDK.csproj" />
-  </ItemGroup>
 </Project>
