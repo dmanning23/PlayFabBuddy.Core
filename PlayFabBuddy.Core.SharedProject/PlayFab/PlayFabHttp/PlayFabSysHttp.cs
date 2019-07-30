@@ -49,8 +49,8 @@ namespace PlayFab.Internal
 
                 try
                 {
-                    httpResponse = await _client.PostAsync(fullUrl, postBody);
-                    httpResponseString = await httpResponse.Content.ReadAsStringAsync();
+					httpResponse = await _client.PostAsync(fullUrl, postBody).ConfigureAwait(false);
+                    httpResponseString = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
                 catch (HttpRequestException e)
                 {
