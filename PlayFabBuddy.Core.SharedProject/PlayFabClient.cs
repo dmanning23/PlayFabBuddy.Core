@@ -51,6 +51,11 @@ namespace PlayFabBuddyLib
 			return PlayFabClientAPI.LoginWithFacebookAsync(request, customData, extraHeaders);
 		}
 
+		public Task<PlayFabResult<LinkFacebookAccountResult>> LinkFacebookAccountAsync(LinkFacebookAccountRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.LinkFacebookAccountAsync(request, customData, extraHeaders);
+		}
+
 		public Task<PlayFabResult<UnlinkAndroidDeviceIDResult>> UnlinkAndroidDeviceIDAsync(UnlinkAndroidDeviceIDRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
 		{
 			return PlayFabClientAPI.UnlinkAndroidDeviceIDAsync(request, customData, extraHeaders);
@@ -129,6 +134,11 @@ namespace PlayFabBuddyLib
 		public Task<PlayFabResult<UpdateUserDataResult>> UpdateUserPublisherDataAsync(UpdateUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
 		{
 			return PlayFabClientAPI.UpdateUserPublisherDataAsync(request, customData, extraHeaders);
+		}
+
+		public Task<PlayFabResult<GetTitleDataResult>> GetTitleDataAsync(GetTitleDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.GetTitleDataAsync(request, customData, extraHeaders);
 		}
 
 		public Task<PlayFabResult<GetLeaderboardResult>> GetLeaderboardAsync(GetLeaderboardRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
