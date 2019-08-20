@@ -111,6 +111,11 @@ namespace PlayFabBuddyLib
 			return PlayFabClientAPI.GetStoreItemsAsync(request, customData, extraHeaders);
 		}
 
+		public Task<PlayFabResult<GetCatalogItemsResult>> GetCatalogItemsAsync(GetCatalogItemsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
+		{
+			return PlayFabClientAPI.GetCatalogItemsAsync(request, customData, extraHeaders);
+		}
+
 		public Task<PlayFabResult<GetUserDataResult>> GetUserDataAsync(GetUserDataRequest request, object customData = null, Dictionary<string, string> extraHeaders = null)
 		{
 			return PlayFabClientAPI.GetUserDataAsync(request, customData, extraHeaders);

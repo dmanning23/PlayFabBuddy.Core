@@ -103,6 +103,8 @@ namespace PlayFabBuddyLib
 
 		Task<PlayFabResult<GetStoreItemsResult>> GetStoreItemsAsync(GetStoreItemsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null);
 
+		Task<PlayFabResult<GetCatalogItemsResult>> GetCatalogItemsAsync(GetCatalogItemsRequest request, object customData = null, Dictionary<string, string> extraHeaders = null);
+
 		#endregion //Player Inventory
 
 		#region Player Data
